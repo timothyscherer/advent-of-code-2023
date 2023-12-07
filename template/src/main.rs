@@ -1,7 +1,7 @@
 fn main() {
     let input = include_str!("input.txt");
-    // println!("part1 = {}", part1::run(input));
-    // println!("part2 = {}", part2::run(input));
+    println!("part1 = {}", part1::run(input));
+    println!("part2 = {}", part2::run(input));
 }
 
 #[test]
@@ -11,12 +11,6 @@ fn part1() {
     todo!();
 }
 
-mod part1 {
-    pub fn run(input: &str) {
-        todo!();
-    }
-}
-
 #[test]
 fn part2() {
     let input = include_str!("example2.txt");
@@ -24,8 +18,14 @@ fn part2() {
     todo!();
 }
 
+mod part1 {
+    pub fn run(input: &str) -> i32 {
+        todo!();
+    }
+}
+
 mod part2 {
-    pub fn run(input: &str) {
+    pub fn run(input: &str) -> i32 {
         todo!();
     }
 }
