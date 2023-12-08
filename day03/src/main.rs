@@ -20,8 +20,24 @@ fn part1() {
     assert_eq!(part1::run(input), 4361);
 }
 
+#[test]
+fn part2() {
+    let input = include_str!("example1.txt");
+    // assert_eq!(
+    //     part1::has_symbol(
+    //         input,
+    //         part1::SearchRegion {
+    //             start: part1::Point { x: 0, y: 0 },
+    //             end: part1::Point { x: 3, y: 1 }
+    //         }
+    //     ),
+    //     true
+    // );
+    assert_eq!(part2::run(input), 467835);
+}
+
 mod part1 {
-    #[derive(Debug, Clone, Copy)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
     pub struct Point {
         pub x: usize,
         pub y: usize,
@@ -120,7 +136,61 @@ mod part1 {
 }
 
 mod part2 {
+    use super::part1::{self, Number, Point};
+    use std::collections::HashMap;
+
     pub fn run(input: &str) -> i32 {
-        todo!();
+        get_ratios(input).iter().sum::<usize>() as i32
+    }
+
+    pub fn collect_gears(s: &str, number: Number) -> Vec<Point> {
+        let mut points = vec![];
+        let mut position = Point {
+            x: number.location.start.x,
+            y: number.location.start.y,
+        };
+        for line in s.lines().collect::<Vec<&str>>()
+            [number.location.start.y..number.location.end.y + 1]
+            .to_vec()
+        {
+            for c in line.chars().collect::<Vec<char>>()
+                [number.location.start.x..number.location.end.x + 1]
+                .to_vec()
+            {
+                if c == '*' {
+                    points.push(position);
+                }
+                position.x += 1;
+            }
+            position.x = number.location.start.x;
+            position.y += 1;
+        }
+        points
+    }
+
+    pub fn get_ratios(s: &str) -> Vec<usize> {
+        let mut map: HashMap<Point, Vec<Number>> = HashMap::new();
+        let numbers = part1::get_numbers(s);
+        for number in numbers {
+            let points = collect_gears(s, number);
+            for point in points {
+                if map.contains_key(&point) {
+                    map.get_mut(&point).unwrap().push(number);
+                } else {
+                    map.insert(point, vec![number]);
+                }
+            }
+        }
+        let mut ratios = vec![];
+        for (_, numbers) in map {
+            if numbers.len() > 1 {
+                let mut ratio = 1;
+                for number in numbers {
+                    ratio *= number.value;
+                }
+                ratios.push(ratio);
+            }
+        }
+        ratios
     }
 }
